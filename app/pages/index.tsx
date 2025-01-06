@@ -1,8 +1,7 @@
-"use client"; // Add this at the very top of the file 
-
+// pages/index.tsx
 import { useState } from "react";
 import axios from "axios";
-import InputForm from "./components/InputForm";
+import InputForm from "../components/InputForm";
 
 interface TraversedNode {
   node: string;
@@ -28,8 +27,8 @@ const Home: React.FC = () => {
     }
 
     interface ShortestPathResponse {
-      nodes: TraversedNode[];
-      distance: number;
+        NodeNames: TraversedNode[];
+        Distance: number;
     }
 
     const response = await axios.post<ShortestPathResponse>("http://localhost:5085/api/ShortestPath/shortest-path", {
@@ -44,8 +43,10 @@ const Home: React.FC = () => {
       })),
     });
 
-      const { nodes, distance } = response.data;
-      setResult({ nodes, distance });
+      console.log(response, "response");
+      const { NodeNames, Distance } = response.data;
+      setResult({ nodes: NodeNames, distance: Distance });
+      console.log(result, "result");
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -58,14 +59,11 @@ const Home: React.FC = () => {
       <div>
         <h2>Calculated Path:</h2>
         <ul>
-          {result.nodes != undefined  ? (           
-          result.nodes.map((node, index) => (
+          {result.nodes.map((node, index) => (
             <li key={index}>
               Node: {node.node}, Distance: {node.distance}
-            </li>)) ): (
-            <li>
-              No path found </li>
-          )}
+            </li>
+          ))}
         </ul>
         <h3>Total Distance: {result.distance}</h3>
       </div>
